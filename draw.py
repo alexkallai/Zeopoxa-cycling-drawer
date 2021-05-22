@@ -55,7 +55,7 @@ print('Maximum longitude value:', maxlon, 'diff = ', maxlon-minlon)
 cminlat = round(minlat-0.5)
 cmaxlat = round(maxlat+0.5)
 cminlon = round(minlon-0.5)
-cmaxlon = round(minlon+0.5)
+cmaxlon = round(maxlon+0.5)
 
 #Printing min and max values of canvas
 print(cminlat)
@@ -64,32 +64,32 @@ print(cminlon)
 print(cmaxlon)
 
 #Parameters for canvas
-SCALE = 10000
+SCALE = 800
 WIDTH = SCALE * (cmaxlon - cminlon) # HORIZONTAL
 HEIGHT = SCALE * (cmaxlat - cminlat) # VERTICAL 
 
 #Creating video
-#video = cv.VideoWriter('output.mp4', fourcc = cv.VideoWriter.fourcc(*'DIVX'), fps=60, frameSize = (WIDTH, HEIGHT))
+video = cv.VideoWriter('output.mp4', fourcc = cv.VideoWriter.fourcc(*'DIVX'), fps=60, frameSize = (WIDTH, HEIGHT))
 
 #Creating image
-img = np.zeros((HEIGHT,WIDTH,3), np.uint8)
+img = np.zeros((WIDTH,HEIGHT,3), np.uint8)
 print(type(img))
 #Drawing on image
 runvar = 0
 for row in coordinatelistfloat:
-    img[ round(SCALE*(cmaxlat-row[1])) ][ round(SCALE*(cmaxlon-row[0])) ][0] = randrange(255)
-    img[ round(SCALE*(cmaxlat-row[1])) ][ round(SCALE*(cmaxlon-row[0])) ][1] = randrange(255)
-    img[ round(SCALE*(cmaxlat-row[1])) ][ round(SCALE*(cmaxlon-row[0])) ][2] = randrange(255)
-#    if runvar % 10 == 0: 
-#        video.write(img)
+    img[ round(SCALE*(cmaxlon-row[0])) ][ HEIGHT - round(SCALE*(cmaxlat-row[1])) ][0] = randrange(255)
+    img[ round(SCALE*(cmaxlon-row[0])) ][ HEIGHT - round(SCALE*(cmaxlat-row[1])) ][1] = randrange(255)
+    img[ round(SCALE*(cmaxlon-row[0])) ][ HEIGHT - round(SCALE*(cmaxlat-row[1])) ][2] = randrange(255)
+    if runvar % 10 == 0: 
+        video.write(img)
     runvar=runvar+1
     print(runvar)
 
-#cv.imshow("Display window", img)
-cv.imwrite('randcolor.png',img)
+cv.imshow("Display window", img)
+#cv.imwrite('randcolor.png',img)
 
-#video.write(img)
-#video.release()
+video.write(img)
+video.release()
 
 k = cv.waitKey(0)
 cv.destroyAllWindows()
