@@ -4,6 +4,8 @@ from random import randrange
 import cv2 as cv
 import sys
 
+from regex import R
+
 #LONGITUDE - horizontal coordinate
 #LATITUDE - vertical coordinate
 
@@ -72,14 +74,14 @@ def main():
 	#	input()
 
 	#Calculating canvas corner coordinates
-	marginInDegrees = 0.1
+	marginInDegrees = 0.01
 	cMinLat = float(minLat-marginInDegrees)
 	cMaxLat = float(maxLat+marginInDegrees)
 	cMinLon = float(minLon-marginInDegrees)
 	cMaxLon = float(maxLon+marginInDegrees)
 
 	#Parameters for canvas
-	SCALE = 10000
+	SCALE = 20000
 	WIDTH = int( SCALE * (cMaxLon - cMinLon) ) # HORIZONTAL
 	HEIGHT = int( SCALE * (cMaxLat - cMinLat) )# VERTICAL 
 
@@ -94,10 +96,23 @@ def main():
 	#Drawing on image
 
 	for index, workout in enumerate(processedCoordinates):
-		for coordinatePair in workout:
-			img[ round(SCALE*(cMaxLon-coordinatePair["latitude"])) ][ HEIGHT - round(SCALE*(cMaxLat-coordinatePair["longitude"])) ][0] = 0
-			img[ round(SCALE*(cMaxLon-coordinatePair["latitude"])) ][ HEIGHT - round(SCALE*(cMaxLat-coordinatePair["longitude"])) ][1] = 0
-			img[ round(SCALE*(cMaxLon-coordinatePair["latitude"])) ][ HEIGHT - round(SCALE*(cMaxLat-coordinatePair["longitude"])) ][2] = 0
+		r = randrange(255)
+		g = randrange(255)
+		b = randrange(255)
+
+		for idx, coordinatePair in enumerate(workout):
+			if idx < len(workout)-1:
+				xCoordinate = round(SCALE*(cMaxLon-coordinatePair["latitude"])) 
+				yCoordinate = HEIGHT - round(SCALE*(cMaxLat-coordinatePair["longitude"])) 
+				xCoordinateplus1 = round(SCALE*(cMaxLon-workout[idx+1]["latitude"])) 
+				yCoordinateplus1 = HEIGHT - round(SCALE*(cMaxLat-workout[idx+1]["longitude"])) 
+
+				#cv.line(img, (yCoordinate, xCoordinate), (yCoordinateplus1,xCoordinateplus1), (r,g,b), 6)
+				cv.circle(img, (yCoordinate, xCoordinate), 6,(r,g,b), -1 )
+				#legacy
+				#img[ round(SCALE*(cMaxLon-coordinatePair["latitude"])) ][ HEIGHT - round(SCALE*(cMaxLat-coordinatePair["longitude"])) ][0] = 0
+				#img[ round(SCALE*(cMaxLon-coordinatePair["latitude"])) ][ HEIGHT - round(SCALE*(cMaxLat-coordinatePair["longitude"])) ][1] = 0
+				#img[ round(SCALE*(cMaxLon-coordinatePair["latitude"])) ][ HEIGHT - round(SCALE*(cMaxLat-coordinatePair["longitude"])) ][2] = 0
 	#if index % 10 == 0: 
 	#	video.write(img)
 
